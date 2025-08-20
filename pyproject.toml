@@ -1,0 +1,55 @@
+[project]
+name = "poke-agent"
+version = "0.1.0"
+description = "Local agent for pokemon showdown"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ollama>=0.5.3",
+    "poke-env>=0.10.0",
+    "ruff>=0.12.9",
+]
+[project.scripts]
+start = "main"
+
+[tool.ruff]
+target-version = "py312" # Python version (examples: 39 for 3.9, 310 for 3.10, etc.)
+line-length = 120 # Maximum line-length for formatting
+exclude = [ # Scripts or folders to exclude from linting/formatting
+    "bin", # ignore whole folder
+    "guidelines",
+    "notebooks",
+    "tests",
+    "validation_tests",
+]
+
+[tool.ruff.lint]
+ignore = [ # Rules to ignore. In this example these are all docstring (D) related rules.
+    "D100", # Missing docstring
+    "D205", # 1 blank line required between summary qnd description
+    "D415", # First line should end with a period, question mark or exclamation point.
+    "S113", # Usage of requests without timeout.
+    "N803", # Function name should be lowercase
+    "N806", # Variable name should be lowercase
+
+]
+select = [ # Sets of rules to check for
+    "B",    # bugbear
+    "C4",   # comprehensions
+    "C90",  # mccabe
+    "D",    # docstrings
+    "E",    # pycodestyle
+    "W",    # pycodestyle
+    "F",    # flake8
+    "S",    # bandit
+    "N",    # pep8-naming
+    "RUF",  # ruff
+    "I",    # isort
+    "PD",   # pandas
+    "T20",  # flake8-print plugin to make sure there are no print statements in the code.
+    "ANN",  # type annotations
+    "ARG",  # argument annotations
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google" # The type of docstring style to follow. Will be elaborated on in the module about docstrings.
