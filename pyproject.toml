@@ -5,12 +5,17 @@ description = "Local agent for pokemon showdown"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "click>=8.2.1",
+    "loguru>=0.7.3",
     "ollama>=0.5.3",
     "poke-env>=0.10.0",
-    "ruff>=0.12.9",
 ]
+
 [project.scripts]
-start = "main"
+start = "main:main"
+
+[tool.uv]
+package = true
 
 [tool.ruff]
 target-version = "py312" # Python version (examples: 39 for 3.9, 310 for 3.10, etc.)

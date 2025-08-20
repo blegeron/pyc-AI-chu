@@ -3,3 +3,6 @@
 .python-version
 .vscode/*
 *.pyc
+site
+*.egg-info
+__pycache__
