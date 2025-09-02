@@ -59,3 +59,10 @@ select = [ # Sets of rules to check for
 
 [tool.ruff.lint.pydocstyle]
 convention = "google" # The type of docstring style to follow. Will be elaborated on in the module about docstrings.
+
+[dependency-groups]
+dev = [
+    "fastapi>=0.116.1",
+    "mlflow>=3.3.2",
+    "uvicorn>=0.35.0",
+]

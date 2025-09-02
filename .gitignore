@@ -1,9 +1,33 @@
-.ruff_cache
-.venv
-.python-version
-.vscode/*
-*.pyc
-site
-*.egg-info
+# Python
 __pycache__
+*.ipynb_checkpoints
+*.pyc
+
+# Python Package
+build/
+dist/
+*.egg-info/
+
+# data
+data/
+models/
+
+# Virtual Environment
+.python-version
+.venv
+
+#docs
+site
+
+# IDEs
+.vscode/*
+
+# Ruff
+.ruff_cache
+
+# Environment variables
 .env
+
+# Mlflow
+mlruns/
+mlartifacts/

@@ -1,0 +1,12 @@
+FROM python:3.10.12-slim
+
+WORKDIR /api
+
+COPY src src
+COPY pyproject.toml pyproject.toml
+RUN pip install .
+
+COPY api api
+COPY models models
+
+CMD uvicorn api.fast:my_api --host 0.0.0.0 --port ${PORT} 
