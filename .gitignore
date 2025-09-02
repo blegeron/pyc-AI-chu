@@ -6,3 +6,4 @@
 site
 *.egg-info
 __pycache__
+.env
