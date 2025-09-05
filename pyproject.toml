@@ -6,9 +6,10 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "loguru>=0.7.3",
+    "mlflow>=3.3.2",
     "ollama>=0.5.3",
     "poke-env>=0.10.0",
-    "ray[rllib]>=2.49.0",
+    "ray[rllib]>=2.49.1",
     "torch>=2.8.0",
 ]
 
@@ -63,6 +64,7 @@ convention = "google" # The type of docstring style to follow. Will be elaborate
 [dependency-groups]
 dev = [
     "fastapi>=0.116.1",
+    "gputil>=1.4.0",
     "mlflow>=3.3.2",
     "uvicorn>=0.35.0",
 ]
