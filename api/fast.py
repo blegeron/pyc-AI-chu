@@ -1,7 +1,9 @@
 import os
 
 import loguru
+import numpy as np
 from fastapi import FastAPI, HTTPException
+from poke_env import AccountConfiguration
 
 from registry import load_model
 from rldresseur import ReplayBuffer, SimpleRLAgent
@@ -16,22 +18,41 @@ def health():
 
 @my_api.get("/agents")
 def agents():
-    path = "C://Users//Vanshi//Desktop//gfg"
-    dir_list = os.listdir(path)
+    dirname = os.path.dirname(__file__)
+    models_path = os.path.join(dirname, "../src/models")
+    dir_list = os.listdir(models_path)
+    if not os.path.exists(models_path):
+        return {"agents": []}
     list_agents = [f.split(".")[0] for f in dir_list]
     return {"agents": list_agents}
 
 
 @my_api.get("/duel")
-def duel(pseudo: str, agent: str) -> None:
+async def duel(pseudo: str, agent: str) -> None:
+    loguru.logger.info(f"{pseudo} is trying dueling with {agent}!")
     try:
-        load_model(agent)
-    except HTTPException:
-        return HTTPException(status_code=404, detail="Agent not Found check agent with /agents endpoint")
+        buffer = ReplayBuffer(capacity=1000)
+
+        # Replace with actual dims
+        q_net = load_model(agent)
+        account_configuration_agent = AccountConfiguration(
+            username=f"{agent}{np.random.randint(1e2)}",
+            password=None,
+        )
+        agent_battle = SimpleRLAgent(
+            account_configuration=account_configuration_agent,
+            battle_format="gen9randombattle",
+            q_net=q_net,
+            buffer=buffer,
+        )
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Agent model file not found")
+    except Exception as e:
+        loguru.logger.exception("Unexpected error while loading agent")
+        raise HTTPException(status_code=500, detail=str(e))
+
     loguru.logger.info(f"{pseudo} is dueling with {agent}!")
-    buffer = ReplayBuffer(capacity=1)
-    agent_test = SimpleRLAgent(battle_format="gen9randombattle", q_net=load_model(agent), buffer=buffer)
-    await agent_test.send_challenges(pseudo, n_challenges=1)
+    await agent_battle.send_challenges(pseudo, n_challenges=1)
     return {"status": "ok"}
 
 

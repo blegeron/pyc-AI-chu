@@ -1,11 +1,14 @@
-FROM python:3.10.12-slim
+FROM python:3.12-slim
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /api
 
 COPY src src
-COPY pyproject.toml pyproject.toml
-RUN pip install .
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project
 
 COPY api api
 
-CMD uvicorn api.fast:my_api --host 0.0.0.0 --port ${API_PORT}
+CMD uv run uvicorn api.fast:my_api --host 0.0.0.0 --port ${API_PORT}

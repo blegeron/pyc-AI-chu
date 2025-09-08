@@ -5,7 +5,6 @@ from collections import deque
 import mlflow
 import numpy as np
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from gymnasium.spaces import Box, Discrete
@@ -15,22 +14,8 @@ from poke_env.battle import AbstractBattle
 from poke_env.data import GenData
 
 from params import MLFLOW_EXPERIMENT_NAME, MLFLOW_HOST
+from q_network import QNetwork
 from registry import load_model, save_model
-
-
-class QNetwork(nn.Module):
-    def __init__(self, input_dim, output_dim):
-        super().__init__()
-        self.net = nn.Sequential(
-            nn.Linear(input_dim, 128),
-            nn.ELU(),
-            nn.Linear(128, 64),
-            nn.ELU(),
-            nn.Linear(64, output_dim),
-        )
-
-    def forward(self, x):
-        return self.net(x)
 
 
 class ReplayBuffer:
@@ -58,7 +43,7 @@ class ReplayBuffer:
 class SimpleRLAgent(Player):
     observation_space = Box(low=-1.0, high=4.0, shape=(10,), dtype=np.float32)
 
-    def __init__(self, battle_format, q_net, buffer, device=None, **kwargs):
+    def __init__(self, battle_format: AbstractBattle, q_net: QNetwork, buffer: ReplayBuffer, device=None, **kwargs):
         super().__init__(battle_format=battle_format, **kwargs)
         self.q_net = q_net
         self.buffer = buffer

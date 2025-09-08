@@ -15,3 +15,6 @@ api_docker_build:
 
 api_docker_run:
 	docker build -t api-local -f Dockerfile-api .
+
+fastapi :
+	uv run uvicorn api.fast:my_api --host 0.0.0.0 --port 8888 --reload
