@@ -9,3 +9,9 @@ clean:
 	docker stop mlflow-container
 	docker rm mlflow-container
 	docker rmi mlflow-local
+
+api_docker_build:
+	docker build -t api-local -f Dockerfile-api .
+
+api_docker_run:
+	docker build -t api-local -f Dockerfile-api .

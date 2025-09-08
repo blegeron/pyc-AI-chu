@@ -7,6 +7,5 @@ COPY pyproject.toml pyproject.toml
 RUN pip install .
 
 COPY api api
-COPY models models
 
-CMD uvicorn api.fast:my_api --host 0.0.0.0 --port ${PORT} 
+CMD uvicorn api.fast:my_api --host 0.0.0.0 --port ${API_PORT}
