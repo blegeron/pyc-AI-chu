@@ -2,6 +2,7 @@ import asyncio
 import random
 from collections import deque
 
+import mlflow
 import numpy as np
 import torch
 import torch.nn as nn
@@ -9,8 +10,11 @@ import torch.nn.functional as F
 import torch.optim as optim
 from gymnasium.spaces import Box, Discrete
 from loguru import logger
+from poke_env import AccountConfiguration, MaxBasePowerPlayer, Player, RandomPlayer, SimpleHeuristicsPlayer
 from poke_env.data import GenData
-from poke_env.player import MaxBasePowerPlayer, Player, RandomPlayer, SimpleHeuristicsPlayer
+
+from params import MLFLOW_EXPERIMENT_NAME, MLFLOW_HOST
+from registry import load_model, save_model
 
 
 class QNetwork(nn.Module):
@@ -117,6 +121,7 @@ def train_epoch(
     eps_decay: float = 1e-4,
     update_target_every: int = 1000,
 ):
+    mlflow.log_params({"gamma": 0.99, "batch_size": 64, "lr": 1e-3})
     # Decrease epsilon (linear decay)
     agent.epsilon = max(eps_end, agent.epsilon - eps_decay)
 
@@ -164,32 +169,69 @@ def train_step(agent, target_net, buffer, optimizer, batch_size=64, gamma=0.99):
     optimizer.step()
 
 
-async def train_agent(agent, opponent, target_net, buffer, optimizer):
+async def train_agent():
     for epoch in range(10):  # 10 epochs
-        print(f"Epoch {epoch + 1} started.")
+        logger.info(f"Epoch {epoch + 1} started.")
 
-        for battle_num in range(1):  # 1000 battles per epoch
-            print(f"  Battle {battle_num + 1} started.")
+        for battle_num in range(100):  # 100 battles per epoch
+            logger.info(f"  Battle {battle_num + 1} started.")
             battle = await agent.battle_against(opponent, n_battles=1)
             # Perform training after each battle
             train_step(agent, target_net, buffer, optimizer)
-            print(f"  Battle {battle_num + 1} finished.")
+            logger.info(f"  Battle {battle_num + 1} finished.")
 
-        print(f"Epoch {epoch + 1} finished.")
-    return agent
+        mlflow.log_metrics(
+            {
+                "lose": agent.n_lost_battles / 100,
+                "win_rate": agent.n_won_battles / agent.n_finished_battles,
+                "epsilon": agent.epsilon,
+            },
+            step=epoch,
+        )
+
+        if epoch % 2 == 0:
+            mlflow.pytorch.log_model(
+                pytorch_model=agent.q_net,
+                name="dqn_model",
+                input_example=np.zeros((1, 1, 10), dtype=np.float32),
+                step=epoch,
+            )
+
+        logger.info(f"Epoch {epoch + 1} finished.")
 
 
 if __name__ == "__main__":
+    mlflow.set_tracking_uri(MLFLOW_HOST)
+    mlflow.set_experiment(MLFLOW_EXPERIMENT_NAME)
     input_dim = 10
     output_dim = 26  # discrete number of possible moves
-    q_net = QNetwork(input_dim, output_dim)
+    # q_net = QNetwork(input_dim, output_dim)
+    q_net = load_model("pokemon_torch_rl")
     target_net = QNetwork(input_dim, output_dim)
     target_net.load_state_dict(q_net.state_dict())
     target_net = target_net.cuda()
     optimizer = optim.Adam(q_net.parameters(), lr=1e-3)
     buffer = ReplayBuffer(capacity=10)
 
-    agent = SimpleRLAgent(battle_format="gen9randombattle", q_net=q_net, buffer=buffer)
-    opponent = RandomPlayer(battle_format="gen9randombattle")
+    account_configuration_agent = AccountConfiguration(
+        username=f"SimpleRL{np.random.randint(1e5)}",
+        password=None,
+    )
+    agent = SimpleRLAgent(
+        account_configuration=account_configuration_agent, battle_format="gen9randombattle", q_net=q_net, buffer=buffer
+    )
+    account_configuration_oppo = AccountConfiguration(
+        username=f"MaxBasePower{np.random.randint(1e5)}",
+        password=None,
+    )
+    opponent = MaxBasePowerPlayer(account_configuration=account_configuration_oppo, battle_format="gen9randombattle")
 
     asyncio.run(train_agent())
+
+    mlflow.log_metrics({"win_ratio": agent.n_won_battles / agent.n_finished_battles})
+    logger.debug(f"Player {agent.username} won {agent.n_won_battles} out of {agent.n_finished_battles} played")
+
+    mlflow.pytorch.log_model(
+        pytorch_model=agent.q_net, name="dqn_model", input_example=np.zeros((1, 1, 10), dtype=np.float32)
+    )
+    save_model(agent.q_net, "pokemon_torch_rl")
