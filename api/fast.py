@@ -3,7 +3,7 @@ import os
 import loguru
 import numpy as np
 from fastapi import FastAPI, HTTPException
-from poke_env import AccountConfiguration
+from poke_env import AccountConfiguration, ServerConfiguration
 
 from registry import load_model
 from rldresseur import ReplayBuffer, SimpleRLAgent
@@ -29,6 +29,9 @@ def agents():
 
 @my_api.get("/duel")
 async def duel(pseudo: str, agent: str) -> None:
+    custom_config = ServerConfiguration(
+        "wss://showdown-899456062956.us-east1.run.app/showdown/websocket", "/action.php?"
+    )
     loguru.logger.info(f"{pseudo} is trying dueling with {agent}!")
     try:
         buffer = ReplayBuffer(capacity=1000)
@@ -44,6 +47,7 @@ async def duel(pseudo: str, agent: str) -> None:
             battle_format="gen9randombattle",
             q_net=q_net,
             buffer=buffer,
+            server_configuration=custom_config,
         )
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Agent model file not found")
