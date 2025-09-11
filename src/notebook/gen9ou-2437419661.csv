@@ -1,0 +1,21 @@
+Poke_battle_id,Turn_id,Poke_p1,Poke_p2,PokemonP1_HP_ORI,PokemonP2_HP_ORI,Action_P1,Action_P2,PokemonP1_HP,PokemonP2_HP,Difference,Move,Victory_flag
+gen9ou-2437419661,1757320834,Ting-Lu,Mew,100,100,Switch,Switch,100,100,0,0,0
+gen9ou-2437419661,1757320839,Ting-Lu,Mew,100,100,cant,Imprison,100,100,0,-1,0
+gen9ou-2437419661,1757320848,Meowscarada,Mew,100,100,Switch,Stealth Rock,100,100,0,1,0
+gen9ou-2437419661,1757320853,Meowscarada,Mew,100,100,Knock Off,Transform,91,62,29,0,0
+gen9ou-2437419661,1757320871,Meowscarada,Mew,91,62,Struggle,Knock Off,24,37,-42,-1,0
+gen9ou-2437419661,1757320902,Alomomola,Mew,100,37,Switch,Triple Axel,83,3,17,2,0
+gen9ou-2437419661,1757320919,Alomomola,Necrozma,83,100,Flip Turn,Switch,83,90,10,-1,0
+gen9ou-2437419661,1757320925,Ting-Lu,Necrozma,100,90,Switch,,100,96,-6,1,0
+gen9ou-2437419661,1757320937,Ting-Lu,Mew,100,3,Stealth Rock,Switch,100,3,0,-1,0
+gen9ou-2437419661,1757320942,Ting-Lu,Slowking-Galar,100,100,Whirlwind,Spikes,100,88,12,0,0
+gen9ou-2437419661,1757320951,Ting-Lu,Slowking-Galar,100,88,Spikes,Sludge Bomb,91,88,-9,1,0
+gen9ou-2437419661,1757320962,Ting-Lu,Bronzong,91,100,Spikes,Switch,98,100,7,-2,0
+gen9ou-2437419661,1757320968,Gholdengo,Bronzong,100,100,Switch,Body Press,94,100,-6,1,0
+gen9ou-2437419661,1757320975,Gholdengo,Bronzong,94,100,Shadow Ball,Future Sight,94,30,70,1,0
+gen9ou-2437419661,1757320981,Gholdengo,Mew,94,3,Shadow Ball,Switch,94,0,3,-1,1
+gen9ou-2437419661,1757320985,Gholdengo,Grimmsnarl,94,100,,Switch,94,72,28,-1,0
+gen9ou-2437419661,1757320990,Ting-Lu,Grimmsnarl,98,72,Switch,Light Screen,85,72,-13,1,0
+gen9ou-2437419661,1757321001,Ting-Lu,Grimmsnarl,85,72,Spikes,Reflect,91,72,6,0,0
+gen9ou-2437419661,1757321007,Ting-Lu,Okidogi,91,100,Whirlwind,Parting Shot,98,75,32,0,0
+gen9ou-2437419661,1757321017,Ting-Lu,Grimmsnarl,98,72,Whirlwind,Knock Off,91,34,31,0,0
