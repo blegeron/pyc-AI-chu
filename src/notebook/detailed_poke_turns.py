@@ -188,6 +188,50 @@ def main():
     else:
         print("No battles parsed.")
 
+def generate_poke_moves():
+    details_file = os.path.join(DATA_DIR, "battle_details.csv")
+    output_file = os.path.join(DATA_DIR, "poke_moves.csv")
+
+    if not os.path.exists(details_file):
+        print("battle_details.csv not found, run main() first.")
+        return
+
+    df = pd.read_csv(details_file)
+    rows = []
+
+    for _, row in df.iterrows():
+        # Player 1 perspective
+        rows.append({
+            "Poke_battle_id": row["Poke_battle_id"],
+            "Turn_id": row["Turn_id"],
+            "Poke": row["Poke_p1"],
+            "Poke_opponent": row["Poke_p2"],
+            "Action_Poke": row["Action_P1"],
+            "Action_Poke_opponent": row["Action_P2"],
+            "Difference": row["Difference"],
+            "Move": row["Move"],
+            "Victory": row["Victory"]
+        })
+
+        # Player 2 perspective (flip values)
+        rows.append({
+            "Poke_battle_id": row["Poke_battle_id"],
+            "Turn_id": row["Turn_id"],
+            "Poke": row["Poke_p2"],
+            "Poke_opponent": row["Poke_p1"],
+            "Action_Poke": row["Action_P2"],
+            "Action_Poke_opponent": row["Action_P1"],
+            "Difference": -row["Difference"],
+            "Move": -row["Move"],
+            "Victory": -row["Victory"]
+        })
+
+    moves_df = pd.DataFrame(rows)
+    moves_df.to_csv(output_file, index=False)
+    print(f"Saved poke_moves.csv with {len(moves_df)} rows to {output_file}")
+
+
 
 if __name__ == "__main__":
     main()
+    generate_poke_moves()
