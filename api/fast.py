@@ -5,7 +5,7 @@ import numpy as np
 from fastapi import FastAPI, HTTPException
 from poke_env import AccountConfiguration, ServerConfiguration
 
-from registry import load_model
+from registry import get_all_models, load_model
 from rldresseur import ReplayBuffer, SimpleRLAgent
 
 my_api = FastAPI()
@@ -18,13 +18,7 @@ def health():
 
 @my_api.get("/agents")
 def agents():
-    dirname = os.path.dirname(__file__)
-    models_path = os.path.join(dirname, "../src/models")
-    dir_list = os.listdir(models_path)
-    if not os.path.exists(models_path):
-        return {"agents": []}
-    list_agents = [f.split(".")[0] for f in dir_list]
-    return {"agents": list_agents}
+    return {"agents": get_all_models()}
 
 
 @my_api.get("/duel")

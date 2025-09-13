@@ -9,7 +9,6 @@ dependencies = [
     "mlflow>=3.3.2",
     "ollama>=0.5.3",
     "poke-env>=0.10.0",
-    "ray[rllib]>=2.49.1",
     "torch>=2.8.0",
 ]
 

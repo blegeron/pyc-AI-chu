@@ -1,9 +1,9 @@
 import os
 import pickle
 
+import torch
 from loguru import logger
 
-import torch
 from q_network import QNetwork
 
 dirname = os.path.dirname(__file__)
@@ -22,6 +22,14 @@ def load_model(name: str, input_dim: int = 10, output_dim: int = 26) -> QNetwork
     model.load_state_dict(torch.load(f"{models_path}/{name}.pth", map_location="cpu"))
     model.eval()
     return model
+
+
+def get_all_models() -> list[str]:
+    if not os.path.exists(models_path):
+        return []
+    dir_list = os.listdir(models_path)
+    list_models = [f.split(".")[0] for f in dir_list if f.endswith(".pth")]
+    return list_models
 
 
 if __name__ == "__main__":

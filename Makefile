@@ -14,7 +14,7 @@ api_docker_build:
 	docker build -t api-local -f Dockerfile-api .
 
 api_docker_run:
-	docker build -t api-local -f Dockerfile-api .
+	docker run -d --name api-container --env-file .env -p ${API_PORT}:${API_PORT} api-local
 
 fastapi :
 	uv run uvicorn api.fast:my_api --host 0.0.0.0 --port 8888 --reload
