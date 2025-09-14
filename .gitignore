@@ -10,7 +10,7 @@ dist/
 
 # data
 data/
-models/
+saved/
 
 # Virtual Environment
 .python-version

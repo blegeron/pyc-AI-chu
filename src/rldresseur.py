@@ -13,9 +13,9 @@ from poke_env import AccountConfiguration, MaxBasePowerPlayer, Player, RandomPla
 from poke_env.battle import AbstractBattle
 from poke_env.data import GenData
 
-from params import MLFLOW_EXPERIMENT_NAME, MLFLOW_HOST
-from q_network import QNetwork
-from registry import load_model, save_model
+from models.q_network import QNetwork
+from utils.params import MLFLOW_EXPERIMENT_NAME, MLFLOW_HOST
+from utils.registry import load_model, save_model
 
 
 class ReplayBuffer:

@@ -5,8 +5,8 @@ import numpy as np
 from fastapi import FastAPI, HTTPException
 from poke_env import AccountConfiguration, ServerConfiguration
 
-from registry import get_all_models, load_model
 from rldresseur import ReplayBuffer, SimpleRLAgent
+from utils.registry import get_all_models, load_model
 
 my_api = FastAPI()
 
