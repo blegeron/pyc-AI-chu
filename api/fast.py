@@ -6,6 +6,7 @@ from fastapi import FastAPI, HTTPException
 from poke_env import AccountConfiguration, ServerConfiguration
 
 from rldresseur import ReplayBuffer, SimpleRLAgent
+from team_selector import generate_team
 from utils.registry import get_all_models, load_model
 
 my_api = FastAPI()
@@ -55,6 +56,7 @@ async def duel(pseudo: str, agent: str) -> None:
 
 
 @my_api.get("/team")
-def get_team(format: str, constraint: str | None = None) -> str:
+def get_team(format: str, constraint: str | None = None) -> dict:
     loguru.logger.info(f"Generating team for format {format} with constraint {constraint}")
-    pass
+    team = generate_team()
+    return {"team": team}  # TODO use format and constraint

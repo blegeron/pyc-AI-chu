@@ -10,10 +10,22 @@ from models.q_network import QNetwork
 dirname = os.path.dirname(__file__)
 models_path = os.path.join(dirname, "../models")
 data_path = os.path.join(models_path, "data")
-saved_models_path = os.path.join(models_path, "models/saved")
+saved_models_path = os.path.join(models_path, "saved")
 
 if not os.path.exists(models_path):
     os.makedirs(models_path)
+
+
+def save_team(smogon_team: str, name: str = "default") -> None:
+    with open(f"{data_path}/{name}_team.txt", "wb") as f:
+        f.write(smogon_team.encode("utf-8"))
+    logger.info(f"Team saved at {data_path}/{name}_team.pkl")
+
+
+def load_team(name: str = "default") -> list[str]:
+    with open(f"{data_path}/{name}_team.pkl", "rb") as f:
+        team = pickle.load(f)
+    return team
 
 
 def save_model(model: QNetwork, name: str) -> None:

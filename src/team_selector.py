@@ -4,10 +4,10 @@ from datetime import datetime
 
 from loguru import logger
 
-from utils.registry import data_path, pokemon_data
+from utils.registry import pokemon_data, save_team
 
 
-def generate_team_file(poke1=None, poke2=None, poke3=None, poke4=None, poke5=None, poke6=None):
+def generate_team_str(poke1=None, poke2=None, poke3=None, poke4=None, poke5=None, poke6=None):
     # Load the pokemons_selector.csv file with explicit encoding
     pokemons_df = pokemon_data()
 
@@ -30,35 +30,30 @@ def generate_team_file(poke1=None, poke2=None, poke3=None, poke4=None, poke5=Non
         unique_pokemons.append(poke)
     input_pokemons = unique_pokemons
 
-    # Define the output file path
-    output_file_path = os.path.join(data_path, "team_file.txt")
-    log_file_path = os.path.join(data_path, "team_file_log.txt")
+    logger.info(f"Generating team with pokemons: {input_pokemons}")
 
-    # Open the output file in write mode
-    with open(output_file_path, "w", encoding="utf-8") as output_file:
-        for poke_name in input_pokemons:
-            # Find the row for the current poke_name
-            poke_row = pokemons_df[pokemons_df["poke_name"] == poke_name].iloc[0]
-            row_len = poke_row["row_len"]
+    smogon_team = ""
 
-            # Write the rows to the output file
-            for i in range(1, row_len + 1):
-                output_file.write(f"{poke_row[f'row{i}']}\n")
+    for poke_name in input_pokemons:
+        # Find the row for the current poke_name
+        poke_row = pokemons_df[pokemons_df["poke_name"] == poke_name].iloc[0]
+        row_len = poke_row["row_len"]
 
-            # Add a blank line after each Pokémon
-            output_file.write("\n")
+        # Write the rows to the output file
+        for i in range(1, row_len + 1):
+            smogon_team += f"{poke_row[f'row{i}']}\n"
 
-    # Log the execution
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    log_message = f"{timestamp} - Function called with pokemons: {input_pokemons}\n"
+        # Add a blank line after each Pokémon
+        smogon_team += "\n"
 
-    # Open the log file in append mode with encoding
-    with open(log_file_path, "a", encoding="utf-8") as log_file:
-        log_file.write(log_message)
+    return smogon_team
 
-    logger.info(f"Team file generated at {output_file_path}")
-    logger.info(f"Execution logged at {log_file_path}")
+
+def generate_team(format: str = "gen9ou", constraint: str | None = None) -> str:
+    # This function can be expanded to generate teams based on format and constraints
+    return generate_team_str()
 
 
 if __name__ == "__main__":
-    generate_team_file()
+    team = generate_team_str()
+    save_team(team)

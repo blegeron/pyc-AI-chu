@@ -4,16 +4,18 @@ import time
 import requests
 import streamlit as st
 
-BACKEND_URL = os.getenv("BACKEND_URL")
+BACKEND_URI = f"{os.getenv('BACKEND_URL')}:{os.getenv('API_PORT', 8888)}"
 
 
 @st.cache_data
 def load_data():
-    return requests.get(f"{BACKEND_URL}/agents").json()
+    with st.spinner("Loading data..."):
+        data = requests.get(f"{BACKEND_URI}/agents")
+    return data.json() if data.status_code == 200 else {}
 
 
-agent = load_data()
-st.button("Hello")
+agents = load_data()
+st.write(f"{agents}")
 
 st.header("Pokemon AI Duel")
 st.write(
@@ -21,7 +23,7 @@ st.write(
 )
 
 pseudo = st.text_input("Enter your Pseudo", value="AshKetchum")
-agent = st.selectbox("Choose an AI Agent", options=agent.get("agents", []))
+agent = st.selectbox("Choose an AI Agent", options=agents.get("agents", []))
 
 if st.button("Predict Species"):
     with st.spinner("Predicting species..."):
@@ -31,7 +33,7 @@ if st.button("Predict Species"):
             "agent": agent,
         }
 
-        response = requests.get(f"{BACKEND_URL}/duel", params=params)
+        response = requests.get(f"{BACKEND_URI}/duel", params=params)
 
     if response.status_code == 200:
         st.snow()
@@ -55,7 +57,7 @@ if st.button("Generate Team"):
             "constraint": constraint if constraint else None,
         }
 
-        response = requests.get(f"{BACKEND_URL}/team", params=params)
+        response = requests.get(f"{BACKEND_URI}/team", params=params)
 
     if response.status_code == 200:
         team = response.json().get("team", "")
