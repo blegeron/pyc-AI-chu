@@ -24,23 +24,18 @@ st.write(
 
 pseudo = st.text_input("Enter your Pseudo", value="AshKetchum")
 agent = st.selectbox("Choose an AI Agent", options=agents.get("agents", []))
+format = st.selectbox("Choose a format", options=["gen9randombattle", "gen9ou"])
 
-if st.button("Predict Species"):
-    with st.spinner("Predicting species..."):
-        time.sleep(3)
-        params = {
-            "pseudo": pseudo,
-            "agent": agent,
-        }
+if st.button("Let's duel!!!"):
+    with st.spinner("Duel is declared"):
+        params = {"pseudo": pseudo, "agent": agent, "format": format}
 
         response = requests.get(f"{BACKEND_URI}/duel", params=params)
 
     if response.status_code == 200:
-        st.snow()
-        prediction = response.json()
-        st.success(f"The predicted species is: {prediction}")
+        st.success("The duel is finished!")
     else:
-        st.error("Error occurred while predicting species.")
+        st.error("Error occurred while demanding the duel.")
 
 st.header("Team Generator")
 st.write(""" Generate a competitive Pokemon team based on your preferred format and constraints. Whether you're looking

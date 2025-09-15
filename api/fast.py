@@ -23,7 +23,7 @@ def agents():
 
 
 @my_api.get("/duel")
-async def duel(pseudo: str, agent: str) -> None:
+async def duel(pseudo: str, agent: str, format: str = "gen9randombattle") -> None:
     custom_config = ServerConfiguration(
         "wss://showdown-899456062956.us-east1.run.app/showdown/websocket", "/action.php?"
     )
@@ -37,9 +37,15 @@ async def duel(pseudo: str, agent: str) -> None:
             username=f"{agent}{np.random.randint(1e2)}",
             password=None,
         )
+
+        team = None
+        if format != "gen9randombattle":
+            team = generate_team(format=format)
+
         agent_battle = SimpleRLAgent(
             account_configuration=account_configuration_agent,
-            battle_format="gen9randombattle",
+            battle_format=format,
+            team=team,
             q_net=q_net,
             buffer=buffer,
             server_configuration=custom_config,
