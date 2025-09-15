@@ -6,6 +6,7 @@ from fastapi import FastAPI, HTTPException
 from poke_env import AccountConfiguration, ServerConfiguration
 
 from rldresseur import ReplayBuffer, SimpleRLAgent
+from agenticdresseur import QwenAgent
 from team_selector import generate_team
 from utils.registry import get_all_models, load_model
 
@@ -29,10 +30,6 @@ async def duel(pseudo: str, agent: str, format: str = "gen9randombattle") -> Non
     )
     loguru.logger.info(f"{pseudo} is trying dueling with {agent}!")
     try:
-        buffer = ReplayBuffer(capacity=1000)
-
-        # Replace with actual dims
-        q_net = load_model(agent)
         account_configuration_agent = AccountConfiguration(
             username=f"{agent}{np.random.randint(1e2)}",
             password=None,
@@ -42,14 +39,26 @@ async def duel(pseudo: str, agent: str, format: str = "gen9randombattle") -> Non
         if format != "gen9randombattle":
             team = generate_team(format=format)
 
-        agent_battle = SimpleRLAgent(
-            account_configuration=account_configuration_agent,
-            battle_format=format,
-            team=team,
-            q_net=q_net,
-            buffer=buffer,
-            server_configuration=custom_config,
-        )
+        if "agentic" in agent:
+            agent_battle = QwenAgent(
+                account_configuration=account_configuration_agent,
+                battle_format=format,
+                team=team,
+                server_configuration=custom_config,
+            )
+        else:
+            buffer = ReplayBuffer(capacity=1000)
+
+            # Replace with actual dims
+            q_net = load_model(agent)
+            agent_battle = SimpleRLAgent(
+                account_configuration=account_configuration_agent,
+                battle_format=format,
+                team=team,
+                q_net=q_net,
+                buffer=buffer,
+                server_configuration=custom_config,
+            )
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Agent model file not found")
     except Exception as e:

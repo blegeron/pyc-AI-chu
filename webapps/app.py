@@ -23,7 +23,7 @@ st.write(
 )
 
 pseudo = st.text_input("Enter your Pseudo", value="AshKetchum")
-agent = st.selectbox("Choose an AI Agent", options=agents.get("agents", []))
+agent = st.selectbox("Choose an AI Agent", options=[*agents.get("agents", []), "pokemon_agentic"])
 format = st.selectbox("Choose a format", options=["gen9randombattle", "gen9ou"])
 
 if st.button("Let's duel!!!"):
