@@ -6,11 +6,11 @@ class QNetwork(nn.Module):
         super().__init__()
         self.net = nn.Sequential(
             nn.Linear(input_dim, 256),
-            nn.ELU(),
+            nn.ReLU(),
             nn.Linear(256, 128),
-            nn.ELU(),
+            nn.ReLU(),
             nn.Linear(128, 64),
-            nn.ELU(),
+            nn.ReLU(),
             nn.Linear(64, output_dim),
         )
 

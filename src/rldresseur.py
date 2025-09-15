@@ -14,7 +14,7 @@ from poke_env.battle import AbstractBattle
 from poke_env.data import GenData
 
 from models.q_network import QNetwork
-from utils.params import MLFLOW_EXPERIMENT_NAME, MLFLOW_HOST
+from utils.params import MLFLOW_EXPERIMENT_NAME, MLFLOW_URI
 from utils.registry import load_model, save_model
 
 
@@ -322,7 +322,7 @@ async def train_agent():
 
 
 if __name__ == "__main__":
-    mlflow.set_tracking_uri(MLFLOW_HOST)
+    mlflow.set_tracking_uri(MLFLOW_URI)
     mlflow.set_experiment(MLFLOW_EXPERIMENT_NAME)
     input_dim = 10
     output_dim = 26  # discrete number of possible moves

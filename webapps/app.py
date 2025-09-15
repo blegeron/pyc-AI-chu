@@ -15,14 +15,13 @@ def load_data():
 
 
 agents = load_data()
-st.write(f"{agents}")
 
 st.header("Pokemon AI Duel")
 st.write(
     """ Try out our AI-powered Pokemon duel simulator! Enter your pseudo and choose an AI agent to battle against. Watch as the AI makes strategic moves in real-time. """
 )
 
-pseudo = st.text_input("Enter your Pseudo", value="AshKetchum")
+pseudo = st.text_input("Enter your Pseudo", value="blegeron")
 agent = st.selectbox("Choose an AI Agent", options=[*agents.get("agents", []), "pokemon_agentic"])
 format = st.selectbox("Choose a format", options=["gen9randombattle", "gen9ou"])
 
@@ -41,7 +40,7 @@ st.header("Team Generator")
 st.write(""" Generate a competitive Pokemon team based on your preferred format and constraints. Whether you're looking
 for a balanced team or one that fits specific criteria, our generator has you covered! """)
 
-format = st.text_input("Enter Format", value="gen9ou")
+format = st.selectbox("Choose a format", options=["gen9ou"])
 constraint = st.text_input("Enter Constraint (optional)", value="")
 
 if st.button("Generate Team"):
